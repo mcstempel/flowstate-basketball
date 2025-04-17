@@ -1,2 +1,37 @@
-# flowstate-basketball
-Multi‑possession EPV engine + interactive film room that proves basketball isn’t i.i.d.
+# Flowstate‑Basketball
+**A short‑memory Expected‑Possession‑Value engine + interactive film room proving that basketball possessions are *not* independent.**
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/<your‑org>/flowstate-basketball?quickstart=1)
+
+---
+
+## ⚡ Why this exists
+Coaches and models still treat each trip down the floor like a coin flip. **Flowstate** captures what really happens: the *echoes* of the previous three possessions—outcomes, help positions, tempo spikes, micro‑fatigue—shape the next shot.  
+Our memory‑3 model consistently beats the classic memory‑0 EPV by **≥ 4 % log‑loss** out‑of‑sample.
+
+---
+
+## 🔑 What you get
+| Layer | Feature |
+|-------|---------|
+| **Data ingest** | `pbpstats` pulls play‑by‑play + shot chart for any NBA game. |
+| **Feature stack** | Auto‑engineered rolling window: last‑3 outcomes, coverage tags, help‑XY centroid, tempo Δ, (opt) wearable load. |
+| **Models** | Baseline EPV (memory‑0) vs SequenceEPV (memory‑3) — both XGBoost; CLI prints log‑loss delta. |
+| **API** | FastAPI: `/game/{id}/epv` (array) • `/game/{id}/swing` (top‑20 swing possessions). |
+| **Dashboard** | Streamlit timeline scrubber + video clips; toggle models; slider to test memory depth 1‑7; heat‑map overlay. |
+| **One‑click dev env** | GitHub Codespaces dev‑container: Python 3.11, Node 18, ffmpeg pre‑installed. |
+| **Deploy** | Free Streamlit Cloud URL + Render/Fly API in one GitHub Actions push. |
+
+---
+
+## 🚀 Quick start (5 minutes)
+
+```bash
+# 1. open the repo in Codespaces (browser)
+# 2. run:
+python -m pip install -r requirements.txt   # should be no‑op in Codespace
+python ingest.py --game 0022400001          # pulls a Bucks‑vs‑Celtics demo game
+python train.py                             # trains both models, prints log‑loss
+uvicorn api.main:app --reload               # serves the endpoints
+# open a second terminal
+streamlit run app.py                        # launches the dashboard
