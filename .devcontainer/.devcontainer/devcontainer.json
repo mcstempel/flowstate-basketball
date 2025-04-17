@@ -1,0 +1,7 @@
+{
+    "name": "sequence-scope",
+    "build": { "dockerfile": "Dockerfile" },
+    "settings": { "terminal.integrated.defaultProfile.linux": "bash" },
+    "postCreateCommand": "python -m pip install -r requirements.txt || true"
+  }
+  
