@@ -1,0 +1,46 @@
+{
+  "pbp": [],
+  "shots": [
+    { "event_num": 11, "distance": 8,  "period": 1 },
+    { "event_num": 23, "distance": 27, "period": 1 },
+    { "event_num": 37, "distance": 3,  "period": 1 }
+  ],
+  "possessions": [
+    {
+      "poss_id": 1,
+      "period": 1,
+      "time_remaining_in_period": "PT11M32.00S",
+      "duration": 28,
+      "offense_start_score": 0,
+      "defense_start_score": 0,
+      "points": 2,
+      "offense_team_id": 1610612749,
+      "defense_team_id": 1610612738,
+      "last_event_num": 11
+    },
+    {
+      "poss_id": 2,
+      "period": 1,
+      "time_remaining_in_period": "PT10M45.00S",
+      "duration": 22,
+      "offense_start_score": 2,
+      "defense_start_score": 0,
+      "points": 0,
+      "offense_team_id": 1610612738,
+      "defense_team_id": 1610612749,
+      "last_event_num": 23
+    },
+    {
+      "poss_id": 3,
+      "period": 1,
+      "time_remaining_in_period": "PT10M03.00S",
+      "duration": 17,
+      "offense_start_score": 2,
+      "defense_start_score": 0,
+      "points": 3,
+      "offense_team_id": 1610612749,
+      "defense_team_id": 1610612738,
+      "last_event_num": 37
+    }
+  ]
+}

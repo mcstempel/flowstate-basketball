@@ -1,0 +1,4 @@
+poss_id,period,clock_start_sec,clock_end_sec,offense_team_id,defense_team_id,score_diff_start,shot_bucket,points_scored
+1,1,692,664,1610612749,1610612738,0,no_shot,2
+2,1,645,623,1610612738,1610612749,2,paint,0
+3,1,603,586,1610612749,1610612738,2,corner_three,3
