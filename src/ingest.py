@@ -36,13 +36,11 @@ def fetch_game(game_id: str, out_dir: str = "data") -> str:
     client = Client(settings)
     game = client.Game(game_id)
 
-    raw = {
-        # `raw` is the exact API payload; good for future-proofing
-        "pbp":         [e.raw for e in game.pbp.items],
-        "shots":       [s.raw for s in game.shots.items],
-        # Possession objects have helpers, so convert to dicts
-        "possessions": [p.to_dict() for p in game.possessions.items],
-    }
+raw = {
+    "pbp":         [e.to_dict() for e in game.pbp.items],          # <- change here
+    "shots":       [s.to_dict() for s in game.shots.items],        # <- and here
+    "possessions": [p.to_dict() for p in game.possessions.items],
+}
 
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, f"raw_{game_id}.json")
