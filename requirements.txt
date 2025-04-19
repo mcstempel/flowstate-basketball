@@ -1,0 +1,7 @@
+pandas
+pbpstats
+xgboost
+scikit-learn
+streamlit
+fastapi
+uvicorn
