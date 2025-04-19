@@ -2,32 +2,34 @@
 """
 ingest.py
 ----------
-
-Pulls play‑by‑play, shot chart, and possession data for a single NBA game
-from stats.nba.com (via the `pbpstats` library) and saves everything to:
+Download play‑by‑play, shot chart, and possessions for a single NBA game
+using pbpstats and save them as one JSON blob:
 
     data/raw_<game_id>.json
 
 Usage
 -----
-$ python src/ingest.py 0022400001
-# (defaults to 0022400001 if you omit the argument)
-
-Dependencies
-------------
-pip install pbpstats
+python src/ingest.py 0022300031
+# (game_id defaults to 0022400001 if omitted)
 """
-
 import json
 import os
 import sys
 from pbpstats.client import Client
 
 
+def _obj_to_dict(obj):
+    """Return the dict representation regardless of pbpstats version."""
+    if hasattr(obj, "to_dict"):
+        return obj.to_dict()
+    if hasattr(obj, "as_dict"):
+        return obj.as_dict()
+    raise AttributeError("Pbpstats item has no .to_dict() or .as_dict() method")
+
+
 def fetch_game(game_id: str, out_dir: str = "data") -> str:
-    """Download one game and return the path of the saved JSON file."""
+    """Download one game and write data/raw_<game_id>.json. Return path."""
     settings = {
-        # Each resource: where to load it & which provider to use
         "Pbp":         {"source": "web", "data_provider": "stats_nba"},
         "Shots":       {"source": "web", "data_provider": "stats_nba"},
         "Possessions": {"source": "web", "data_provider": "stats_nba"},
@@ -36,11 +38,11 @@ def fetch_game(game_id: str, out_dir: str = "data") -> str:
     client = Client(settings)
     game = client.Game(game_id)
 
-raw = {
-    "pbp":         [e.to_dict() for e in game.pbp.items],          # <- change here
-    "shots":       [s.to_dict() for s in game.shots.items],        # <- and here
-    "possessions": [p.to_dict() for p in game.possessions.items],
-}
+    raw = {
+        "pbp":         [_obj_to_dict(e) for e in game.pbp.items],
+        "shots":       [_obj_to_dict(s) for s in game.shots.items],
+        "possessions": [_obj_to_dict(p) for p in game.possessions.items],
+    }
 
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, f"raw_{game_id}.json")
@@ -49,8 +51,8 @@ raw = {
 
     print(
         f"✅  Saved {out_path}  "
-        f"({len(raw['pbp'])} pbp events, {len(raw['shots'])} shots, "
-        f"{len(raw['possessions'])} possessions)"
+        f"({len(raw['possessions'])} possessions, "
+        f"{len(raw['pbp'])} pbp events, {len(raw['shots'])} shots)"
     )
     return out_path
 
@@ -58,3 +60,4 @@ raw = {
 if __name__ == "__main__":
     gid = sys.argv[1] if len(sys.argv) > 1 else "0022400001"
     fetch_game(gid)
+
