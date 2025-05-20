@@ -35,3 +35,4 @@ python train.py                             # trains both models, prints log‑l
 uvicorn api.main:app --reload               # serves the endpoints
 # open a second terminal
 streamlit run app.py                        # launches the dashboard
+```
