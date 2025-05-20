@@ -36,6 +36,16 @@ python src/train.py                         # trains both models, prints log‑l
 streamlit run app.py                        # launches the dashboard
 ```
 
+## 🔄 Bulk ingest
+Use `ingest_bulk.py` to pull several games at once and build features for each.
+
+```bash
+python src/ingest_bulk.py 0022400001 0022400002 0022400003
+for gid in 0022400001 0022400002 0022400003; do
+    python src/features.py "$gid"
+    python src/sequence_features.py "$gid"
+done
+```
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
