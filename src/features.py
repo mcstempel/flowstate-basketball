@@ -43,9 +43,11 @@ def shot_bucket(distance_ft: float) -> str:
         return "paint"
     if distance_ft <= 18:
         return "midrange"
+    # Distances up through the corner three range
     if distance_ft <= 24:
-        return "non_corner_three"
-    return "corner_three"
+        return "corner_three"
+    # Anything longer is a non‑corner three
+    return "non_corner_three"
 
 
 # ---------------- main -------------------------------------------------------
