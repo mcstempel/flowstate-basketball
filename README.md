@@ -30,8 +30,7 @@ Our memory‑3 model consistently beats the classic memory‑0 EPV by **≥ 4 
 # 1. open the repo in Codespaces (browser)
 # 2. run:
 python -m pip install -r requirements.txt   # should be no‑op in Codespace
-python ingest.py --game 0022400001          # pulls a Bucks‑vs‑Celtics demo game
+python src/ingest.py 0022400001          # pulls a Bucks‑vs‑Celtics demo game
 python train.py                             # trains both models, prints log‑loss
-uvicorn api.main:app --reload               # serves the endpoints
 # open a second terminal
 streamlit run app.py                        # launches the dashboard
