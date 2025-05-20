@@ -35,3 +35,7 @@ python src/train.py                         # trains both models, prints log‑l
 # open a second terminal
 streamlit run app.py                        # launches the dashboard
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
