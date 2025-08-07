@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from src import features
 from src import sequence_features

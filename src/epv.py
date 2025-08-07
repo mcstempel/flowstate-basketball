@@ -16,12 +16,16 @@ _SEQUENCE_MODEL = os.path.join(_MODELS_DIR, "sequence.pkl")
 
 
 def _load_model(path: str) -> Any:
+    """Load a pre-trained model from ``path``."""
+
     if not os.path.exists(path):
         raise FileNotFoundError(f"Model file not found: {path}")
     return joblib.load(path)
 
 
 def _prep_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Prepare dataframe ``df`` for model consumption."""
+
     df = df.drop(columns=["points_scored"], errors="ignore")
     leak_cols = [c for c in df.columns if c.endswith("_team_id")]
     df = df.drop(columns=leak_cols)
@@ -68,7 +72,8 @@ def calculate_swing(game_id: str) -> pd.DataFrame:
     """Return top-20 possessions with largest EPV swing."""
     epv_df = calculate_epv(game_id)
     epv_df["swing"] = epv_df["epv_sequence"] - epv_df["epv_baseline"]
-    return epv_df.reindex(columns=["poss_id", "swing"]).iloc[
-        epv_df["swing"].abs().sort_values(ascending=False).index
-    ].head(20)
-
+    return (
+        epv_df.reindex(columns=["poss_id", "swing"])
+        .iloc[epv_df["swing"].abs().sort_values(ascending=False).index]
+        .head(20)
+    )

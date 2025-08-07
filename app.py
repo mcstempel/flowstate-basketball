@@ -1,3 +1,5 @@
+"""Streamlit dashboard for exploring Expected Possession Value."""
+
 import os
 import pandas as pd
 import streamlit as st
@@ -6,13 +8,19 @@ from xgboost import XGBClassifier
 DATA_DIR = "data"
 MODEL_DIR = "models"
 
+
 @st.cache_data
 def load_csv(game_id: str, model_tag: str) -> pd.DataFrame:
+    """Load a pre-computed feature CSV."""
+
     path = os.path.join(DATA_DIR, f"{model_tag}_{game_id}.csv")
     return pd.read_csv(path)
 
+
 @st.cache_resource
 def load_model(model_tag: str) -> XGBClassifier:
+    """Load a saved XGBoost model."""
+
     model_path = os.path.join(MODEL_DIR, f"{model_tag}_xgb.json")
     clf = XGBClassifier()
     if os.path.exists(model_path):
@@ -23,19 +31,32 @@ def load_model(model_tag: str) -> XGBClassifier:
 
 
 def heat_map(df: pd.DataFrame):
+    """Render a simple shot distance vs. points heat map."""
+
     import altair as alt
+
     if "shot_distance_ft" not in df.columns:
         st.info("No shot distance info available for heat map.")
         return
-    chart = alt.Chart(df).mark_rect().encode(
-        alt.X("shot_distance_ft:Q", bin=alt.Bin(maxbins=30), title="Shot distance (ft)"),
-        alt.Y("points_scored:Q", bin=alt.Bin(maxbins=4), title="Points scored"),
-        alt.Color("count():Q", scale=alt.Scale(scheme="oranges"))
+    chart = (
+        alt.Chart(df)
+        .mark_rect()
+        .encode(
+            alt.X(
+                "shot_distance_ft:Q",
+                bin=alt.Bin(maxbins=30),
+                title="Shot distance (ft)",
+            ),
+            alt.Y("points_scored:Q", bin=alt.Bin(maxbins=4), title="Points scored"),
+            alt.Color("count():Q", scale=alt.Scale(scheme="oranges")),
+        )
     )
     st.altair_chart(chart, use_container_width=True)
 
 
 def main():
+    """Run the Streamlit app."""
+
     st.title("Flowstate Basketball")
 
     game_id = st.sidebar.text_input("Game ID", "0022400001")
@@ -43,10 +64,12 @@ def main():
     model_choice = st.sidebar.radio(
         "Model",
         ("baseline", "sequence"),
-        format_func=lambda x: "Baseline (memory‑0)" if x == "baseline" else "Sequence (memory‑3)",
+        format_func=lambda x: (
+            "Baseline (memory‑0)" if x == "baseline" else "Sequence (memory‑3)"
+        ),
     )
 
-    memory_depth = st.sidebar.slider("Memory depth", 1, 7, 3)
+    _memory_depth = st.sidebar.slider("Memory depth", 1, 7, 3)
     show_heat = st.sidebar.checkbox("Show heat-map overlay")
 
     df = load_csv(game_id, model_choice)

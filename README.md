@@ -16,7 +16,7 @@ Our memory‑3 model consistently beats the classic memory‑0 EPV by **≥ 4 
 |-------|---------|
 | **Data ingest** | `pbpstats` pulls play‑by‑play + shot chart for any NBA game. |
 | **Feature stack** | Auto‑engineered rolling window: last‑3 outcomes, coverage tags, help‑XY centroid, tempo Δ, (opt) wearable load. |
-| **Models** | Baseline EPV (memory‑0) vs SequenceEPV (memory‑3) — both XGBoost; CLI prints log‑loss delta. |
+| **Models** | Baseline EPV (memory‑0) vs SequenceEPV (memory‑3) — both XGBoost; CLI trains & saves models and prints log‑loss delta. |
 | **API** | FastAPI: `/game/{id}/epv` (array) • `/game/{id}/swing` (top‑20 swing possessions). |
 | **Dashboard** | Streamlit timeline scrubber + video clips; toggle models; slider to test memory depth 1‑7; heat‑map overlay. |
 | **One‑click dev env** | GitHub Codespaces dev‑container: Python 3.11, Node 18, ffmpeg pre‑installed. |
@@ -31,7 +31,7 @@ Our memory‑3 model consistently beats the classic memory‑0 EPV by **≥ 4 
 # 2. run:
 python -m pip install -r requirements.txt   # should be no‑op in Codespace
 python src/ingest.py 0022400001          # pulls a Bucks‑vs‑Celtics demo game
-python src/train.py                         # trains both models, prints log‑loss
+python src/train.py                         # trains & saves models, prints log‑loss
 # open a second terminal
 streamlit run app.py                        # launches the dashboard
 ```

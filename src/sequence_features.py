@@ -13,11 +13,14 @@ Output
 ------
 data/sequence_<game_id>.csv
 """
-import sys, os
+import os
+import sys
 import pandas as pd
 
 
-def add_sequence_feats(game_id: str):
+def add_sequence_feats(game_id: str) -> str:
+    """Augment baseline features with short-memory sequence metrics."""
+
     base_path = f"data/baseline_{game_id}.csv"
     if not os.path.exists(base_path):
         raise FileNotFoundError(f"{base_path} not found. Run features.py first.")
@@ -39,15 +42,15 @@ def add_sequence_feats(game_id: str):
     # 3. tempo metrics                                                   #
     # ------------------------------------------------------------------ #
     df["tempo_sec"] = df["clock_start_sec"] - df["clock_end_sec"]
-    df["tempo_mean_last3"] = df["tempo_sec"].rolling(window=3, min_periods=1).mean().shift(1)
+    df["tempo_mean_last3"] = (
+        df["tempo_sec"].rolling(window=3, min_periods=1).mean().shift(1)
+    )
 
     # ------------------------------------------------------------------ #
     # 4. simple momentum flag                                            #
     # ------------------------------------------------------------------ #
     df["streak_scored_last3"] = (
-        (df["prev_pts_1"] > 0)
-        & (df["prev_pts_2"] > 0)
-        & (df["prev_pts_3"] > 0)
+        (df["prev_pts_1"] > 0) & (df["prev_pts_2"] > 0) & (df["prev_pts_3"] > 0)
     ).astype(int)
 
     # drop any rows that lost context (first 3) if you prefer
@@ -55,10 +58,7 @@ def add_sequence_feats(game_id: str):
 
     out_path = f"data/sequence_{game_id}.csv"
     df.to_csv(out_path, index=False)
-    print(
-        f"✅  Saved {out_path}  "
-        f"({len(df)} rows, {df.shape[1]} cols)"
-    )
+    print(f"✅  Saved {out_path}  " f"({len(df)} rows, {df.shape[1]} cols)")
     return out_path
 
 
