@@ -13,7 +13,9 @@ Output
 ------
 data/baseline_<game_id>.csv
 """
-import json, os, sys
+import json
+import os
+import sys
 import pandas as pd
 
 # ---------------- helpers ----------------------------------------------------
@@ -54,6 +56,8 @@ def shot_bucket(distance_ft: float) -> str:
 
 
 def build_baseline(game_id: str) -> str:
+    """Create baseline feature CSV for ``game_id`` and return the path."""
+
     raw_path = f"data/raw_{game_id}.json"
     if not os.path.exists(raw_path):
         raise FileNotFoundError(f"{raw_path} not found. Run ingest.py first.")
@@ -81,18 +85,18 @@ def build_baseline(game_id: str) -> str:
 
     # ---------------- shot location bucket ----------------------------------
     # link each possession to its last shot distance if a shot occurred
-    shot_df = pd.DataFrame(raw["shots"])[
-        ["event_num", "distance", "period"]
-    ].rename(columns={"distance": "shot_distance_ft"})
-
-    # use event_num max per possession_id to get the *last* shot
-    last_shots = (
-        poss_df[["poss_id", "last_event_num"]]
-        .merge(shot_df, left_on="last_event_num", right_on="event_num", how="left")
-        .set_index("poss_id")
+    shot_df = pd.DataFrame(raw["shots"])[["event_num", "distance", "period"]].rename(
+        columns={"distance": "shot_distance_ft"}
     )
 
-    poss_df["shot_distance_ft"] = last_shots["shot_distance_ft"]
+    # use event_num max per possession_id to get the *last* shot
+    last_shots = poss_df[["poss_id", "last_event_num"]].merge(
+        shot_df, left_on="last_event_num", right_on="event_num", how="left"
+    )
+
+    poss_df = poss_df.merge(
+        last_shots[["poss_id", "shot_distance_ft"]], on="poss_id", how="left"
+    )
     poss_df["shot_bucket"] = poss_df["shot_distance_ft"].apply(
         lambda d: shot_bucket(d) if pd.notna(d) else "no_shot"
     )

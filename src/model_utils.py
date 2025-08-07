@@ -1,4 +1,5 @@
-import os
+"""Utility helpers for deriving EPV values from feature CSVs."""
+
 import numpy as np
 import pandas as pd
 from xgboost import XGBClassifier
@@ -25,6 +26,8 @@ def _fit(tag: str, game_id: str):
 
 
 def _epv_df(tag: str, game_id: str) -> pd.DataFrame:
+    """Return EPV dataframe for ``tag`` model (baseline or sequence)."""
+
     model, poss_ids, cats, X = _fit(tag, game_id)
     proba = model.predict_proba(X)
     epv = proba.dot(np.array(cats))
@@ -37,10 +40,14 @@ def sequence_epv(game_id: str) -> pd.DataFrame:
 
 
 def baseline_epv(game_id: str) -> pd.DataFrame:
+    """EPV values using the baseline model."""
+
     return _epv_df("baseline", game_id)
 
 
 def swing(game_id: str, top_n: int = 20) -> pd.DataFrame:
+    """Return ``top_n`` possessions with the largest EPV swing."""
+
     seq = sequence_epv(game_id)
     base = baseline_epv(game_id)
     merged = seq.merge(base, on="poss_id", suffixes=("_seq", "_base"))

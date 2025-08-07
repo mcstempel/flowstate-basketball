@@ -1,7 +1,10 @@
+"""FastAPI endpoints exposing EPV calculations."""
+
 from fastapi import FastAPI, HTTPException
 from src import model_utils
 
 app = FastAPI()
+
 
 @app.get("/game/{game_id}/epv")
 def epv(game_id: str):
@@ -25,4 +28,5 @@ def swing(game_id: str):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

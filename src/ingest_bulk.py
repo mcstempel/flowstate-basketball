@@ -12,7 +12,9 @@ import sys
 from ingest import fetch_game
 
 
-def main(game_ids):
+def main(game_ids: list[str]) -> int:
+    """Fetch play-by-play data for each game id provided."""
+
     if not game_ids:
         print("Usage: python src/ingest_bulk.py <game_id1> <game_id2> ...")
         return 1
@@ -20,7 +22,7 @@ def main(game_ids):
         try:
             fetch_game(gid)
         except Exception as e:
-            print(f"\u26A0\ufe0f  Failed to ingest {gid}: {e}")
+            print(f"\u26a0\ufe0f  Failed to ingest {gid}: {e}")
     return 0
 
 
